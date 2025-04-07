@@ -12,16 +12,113 @@
             background-color: black;
             height: 100vh;
             width: 100vw;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            color: white;
         }
+
+        .wallpaper-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
         img {
-            object-fit: contain;
+            object-fit: cover;
             width: 100%;
             height: 100%;
             display: block;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+
+        img:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+
+        .wallpaper-title {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            margin: 0;
+            padding: 15px 25px;
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .wallpaper-copyright {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            margin: 0;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .wallpaper-title:hover, .wallpaper-copyright:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .wallpaper-title {
+                top: 15px;
+                left: 15px;
+                padding: 10px 15px;
+                font-size: 1.5rem;
+            }
+
+            .wallpaper-copyright {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <img src="/images" alt="Bing Wallpaper">
+    <div class="wallpaper-container">
+        <img src="/images" alt="Bing Wallpaper">
+        <h1 class="wallpaper-title">壁纸标题</h1>
+        <p class="wallpaper-copyright">版权信息</p>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('/metadata');
+                if (!response.ok) {
+                    throw new Error('Unable to load metadata: ' + response.status);
+                }
+
+                const metadata = await response.json();
+
+                const image = metadata.images && metadata.images[0];
+                const title = image ? image.title : '壁纸标题';
+                const copyright = image ? image.copyright : '版权信息';
+
+                document.querySelector('.wallpaper-title').textContent = title;
+                document.querySelector('.wallpaper-copyright').textContent = copyright;
+
+                console.log('Metadata loaded: ', metadata);
+            } catch (error) {
+                console.error('Error loading metadata: ', error);
+            }
+        });
+    </script>
 </body>
 </html>

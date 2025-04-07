@@ -77,6 +77,24 @@ app.get('/health', (req, res) => {
   return res.json({ status: 'OK', version: '1.0.0' });
 });
 
+app.get('/metadata', (req, res) => {
+  try {
+    const metadataPath = path.resolve(config.cache.metadataPath);
+    if (fs.existsSync(metadataPath)) {
+      const metadata = fs.readFileSync(metadataPath, 'utf8');
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      return res.send(metadata);
+    } else {
+      logger.warn('No metadata found in cache. Returning 404.');
+      return res.status(404).send('No metadata found.');
+    }
+  } catch (error) {
+    logger.error(`Metadata request failed: ${error.message}`);
+    return res.status(500).send('Internal Server Error');
+  }
+});
+
 app.listen(PORT, HOST, () => {
   logger.info(`Listening ${HOST}:${PORT}`);
   logger.info(`http://localhost:${PORT} for Wallpaper`);
