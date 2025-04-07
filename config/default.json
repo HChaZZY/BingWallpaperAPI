@@ -1,0 +1,21 @@
+{
+  "server": {
+    "port": 3000,
+    "host": "0.0.0.0"
+  },
+  "bing": {
+    "apiUrl": "https://cn.bing.com/HPImageArchive.aspx?format=js&n=1&idx=0&mkt=zh-CN",
+    "baseUrl": "https://global.bing.com"
+  },
+  "cache": {
+    "path": "./cache/bing-wallpaper.jpg",
+    "metadataPath": "./cache/metadata.json"
+  },
+  "schedule": {
+    "checkInterval": "0 * * * *"
+  },
+  "retry": {
+    "maxAttempts": 3,
+    "delayMs": 5000
+  }
+}

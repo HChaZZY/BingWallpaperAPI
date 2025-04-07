@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bing-wallpaper-api:1.0.0
+    container_name: bing-wallpaper-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - bing_cache:/app/cache
+      - bing_logs:/app/logs
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/health"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  bing_cache:
+    name: bing_wallpaper_cache
+  bing_logs:
+    name: bing_wallpaper_logs
